@@ -1,6 +1,6 @@
-import React, { useLayoutEffect, useState, useRef, useReducer, createContext } from 'react'
-import { Button, Modal } from 'react-bootstrap'
+import React, { useState, useRef, useReducer, createContext } from 'react'
 import { apiKey, baseURL } from '../../const'
+import useCurrencies from '../../hooks/useCurrencies'
 import Popup from '../Popup/Popup'
 
 const reducer = (state, action) => {
@@ -15,7 +15,8 @@ const reducer = (state, action) => {
 export const AppContext = createContext(null)
 
 export default function CurrencyConverter(props) {
-    const [currencies, setCurrencies] = useState([])
+    // const [currencies, setCurrencies] = useState([])
+    const currencies = useCurrencies()
     const from = useRef('')
     const to = useRef('')
     const fromValue = useRef(0)
@@ -23,13 +24,13 @@ export default function CurrencyConverter(props) {
     const [showPopup, setShowPopup] = useState(false)
     const [message, setMessage] = useState('')
 
-    useLayoutEffect(() => {
-        fetch('https://openexchangerates.org/api/currencies.json').then(res => {
-            res.text().then(result => {
-                setCurrencies(Object.keys(JSON.parse(result)))
-            })
-        })
-    }, [])
+    // useLayoutEffect(() => {
+    //     fetch('https://openexchangerates.org/api/currencies.json').then(res => {
+    //         res.text().then(result => {
+    //             setCurrencies(Object.keys(JSON.parse(result)))
+    //         })
+    //     })
+    // }, [])
     const convert = () => {
         let myHeaders = new Headers();
         myHeaders.append('apikey', apiKey);
@@ -61,27 +62,6 @@ export default function CurrencyConverter(props) {
             <AppContext.Provider value={{showPopup, message, setMessage, setShowPopup}}>
                 <Popup />
             </AppContext.Provider>
-            {/* <Modal show={showPopup}>
-                <Modal.Header closeButton onClick={() => {
-                    setMessage('')
-                    setShowPopup(false)
-                }}>
-                    <Modal.Title className='justify-content-center'>
-                        <div>Error</div>
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {message}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={() => {
-                        setMessage('')
-                        setShowPopup(false)
-                    }}>
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal> */}
             <div className='container ml-4 mr-4 pl-4 pr-4 mt-4'>
                 <div className='container ml-4 mr-4 pl-4 pr-4 col-md-8'>
                     <nav className='nav navbar mt-4 pt-4'>
