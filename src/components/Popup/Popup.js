@@ -3,25 +3,29 @@ import React, { useContext } from "react";
 import { AppContext } from "../CurrencyConverter/CurrencyConverter";
 
 export default function Popup(props) {
-    const { showPopup, message, setMessage, setShowPopup } = useContext(AppContext)
+    const { error, setError } = useContext(AppContext)
+    console.log(error)
     return (
-
-        <Modal show={showPopup}>
+        <Modal show={error.showPopup}>
             <Modal.Header closeButton onClick={() => {
-                setMessage('')
-                setShowPopup(false)
+                setError({
+                    showPopup: false,
+                    message: ''
+                })
             }}>
                 <Modal.Title className='justify-content-center'>
                     <div>Error</div>
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {message}
+                {error.message}
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="danger" onClick={() => {
-                    setMessage('')
-                    setShowPopup(false)
+                    setError({
+                        showPopup: false,
+                        message: ''
+                    })
                 }}>
                     Close
                 </Button>

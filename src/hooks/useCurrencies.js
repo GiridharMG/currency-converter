@@ -9,7 +9,7 @@ export default function useCurrencies() {
                 setCurrencies(Object.keys(JSON.parse(result)))
             })
         })
-    }, [currencies])
+    }, [])
     
     return currencies
 }

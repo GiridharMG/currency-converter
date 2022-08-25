@@ -1,36 +1,28 @@
-import React, { useState, useRef, useReducer, createContext } from 'react'
+import React, { useRef, useReducer, createContext } from 'react'
 import { apiKey, baseURL } from '../../const'
 import useCurrencies from '../../hooks/useCurrencies'
+import useError from '../../hooks/useError'
 import Popup from '../Popup/Popup'
 
 const reducer = (state, action) => {
-    switch(action.type) {
-        case "SET_RES":
-            return {toValue: action.res}
-        default: 
-            return state
+    switch (action.type) {
+    case "SET_RES":
+        return { toValue: action.res }
+    default:
+        return state
     }
 }
 
 export const AppContext = createContext(null)
 
 export default function CurrencyConverter(props) {
-    // const [currencies, setCurrencies] = useState([])
     const currencies = useCurrencies()
     const from = useRef('')
     const to = useRef('')
     const fromValue = useRef(0)
-    const [state, dispatch] = useReducer(reducer, {toValue: ''})
-    const [showPopup, setShowPopup] = useState(false)
-    const [message, setMessage] = useState('')
+    const [state, dispatch] = useReducer(reducer, { toValue: '' })
+    const [error, setError] = useError({showPopup: false, message: ''})
 
-    // useLayoutEffect(() => {
-    //     fetch('https://openexchangerates.org/api/currencies.json').then(res => {
-    //         res.text().then(result => {
-    //             setCurrencies(Object.keys(JSON.parse(result)))
-    //         })
-    //     })
-    // }, [])
     const convert = () => {
         let myHeaders = new Headers();
         myHeaders.append('apikey', apiKey);
@@ -39,27 +31,39 @@ export default function CurrencyConverter(props) {
             redirect: 'follow',
             headers: myHeaders
         };
-        fetch(baseURL+'conver?to=' + to.current.value + '&from=' + from.current.value + '&amount=' + fromValue.current.value, requestOptions)
+        fetch(baseURL + 'convert?to=' + to.current.value + '&from=' + from.current.value + '&amount=' + fromValue.current.value, requestOptions)
             .then(response => response.text())
             .catch(err => {
-                setShowPopup(true)
-                setMessage('Service not available\nPlease try again later')
+                setError({
+                    showPopup: true,
+                    message: 'Service not available\nPlease try again later'
+                })
+                // setShowPopup(true)
+                // setMessage('Service not available\nPlease try again later')
             })
             .then(res => {
                 if (!JSON.parse(res).result) {
-                    setShowPopup(true)
-                    setMessage('Service not available\nPlease try again later')
+                    setError({
+                        showPopup: true,
+                        message: 'Service not available\nPlease try again later'
+                    })
+                    // setShowPopup(true)
+                    // setMessage('Service not available\nPlease try again later')
                 }
-                dispatch({type: 'SET_RES', res: JSON.parse(res).result})
+                dispatch({ type: 'SET_RES', res: JSON.parse(res).result })
             }).catch(err => {
-                setShowPopup(true)
-                setMessage('Service not available\nPlease try again later')
+                setError({
+                    showPopup: true,
+                    message: 'Service not available\nPlease try again later'
+                })
+                // setShowPopup(true)
+                // setMessage('Service not available\nPlease try again later')
             })
     }
 
     return (
         <>
-            <AppContext.Provider value={{showPopup, message, setMessage, setShowPopup}}>
+            <AppContext.Provider value={{ error, setError }}>
                 <Popup />
             </AppContext.Provider>
             <div className='container ml-4 mr-4 pl-4 pr-4 mt-4'>
@@ -108,7 +112,7 @@ export default function CurrencyConverter(props) {
                     </div>
                     <div className='row'>
                         <div className='col'>
-                            <input className='form-control col-md-6 mt-3' ref={fromValue}/>
+                            <input className='form-control col-md-6 mt-3' ref={fromValue} />
                         </div>
                         <div className='col'>
                             <input className='form-control col-md-6 mt-3' readOnly={true} value={state.toValue} />
