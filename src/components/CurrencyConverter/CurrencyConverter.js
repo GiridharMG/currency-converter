@@ -38,8 +38,6 @@ export default function CurrencyConverter(props) {
                     showPopup: true,
                     message: 'Service not available\nPlease try again later'
                 })
-                // setShowPopup(true)
-                // setMessage('Service not available\nPlease try again later')
             })
             .then(res => {
                 if (!JSON.parse(res).result) {
@@ -47,8 +45,6 @@ export default function CurrencyConverter(props) {
                         showPopup: true,
                         message: 'Service not available\nPlease try again later'
                     })
-                    // setShowPopup(true)
-                    // setMessage('Service not available\nPlease try again later')
                 }
                 dispatch({ type: 'SET_RES', res: JSON.parse(res).result })
             }).catch(err => {
@@ -56,8 +52,6 @@ export default function CurrencyConverter(props) {
                     showPopup: true,
                     message: 'Service not available\nPlease try again later'
                 })
-                // setShowPopup(true)
-                // setMessage('Service not available\nPlease try again later')
             })
     }
 
